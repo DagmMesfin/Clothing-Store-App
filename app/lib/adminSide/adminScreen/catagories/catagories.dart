@@ -2,8 +2,8 @@ import '/adminSide/adminScreen/products/products.dart';
 import '/utils/collections.dart';
 import 'package:flutter/material.dart';
 
-class Categories extends StatelessWidget {
-  const Categories({Key? key}) : super(key: key);
+class catagories extends StatelessWidget {
+  const catagories({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,91 +12,123 @@ class Categories extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CategoryCard(
-              imageIndex: 0,
-              title: 'Mens',
-            ),
-            CategoryCard(
-              imageIndex: 2,
-              title: 'Kids',
-            ),
-          ],
-        ),
-        CategoryCard(
-          imageIndex: 1,
-          title: 'Womens',
-        ),
-      ],
-    );
-  }
-}
-
-class CategoryCard extends StatelessWidget {
-  final int imageIndex;
-  final String title;
-
-  const CategoryCard({
-    Key? key,
-    required this.imageIndex,
-    required this.title,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Container(
-        height: 200,
-        width: 250,
-        child: Card(
-          elevation: 20,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  // Replace the onTap logic with the intended navigation
-                  if (title == 'Mens') {
-                    // Navigate to Mens category or perform other actions
-                  } else if (title == 'Kids') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => products()),
-                    );
-                  } else if (title == 'Womens') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => products()),
-                    );
-                  }
-                },
-                child: Container(
-                  height: 100,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage(
-                        collection().im[imageIndex],
+            GestureDetector(
+              child: Container(
+                height: 200,
+                width: 250,
+                child: Card(
+                  elevation: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => catagories(),
+                        child: Container(
+                          height: 100,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage(
+                                collection().im[0],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      Text('Mens'),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              Text(title),
-              IconButton(
-                onPressed: () {
-                  // Handle delete logic here
-                },
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red,
+            ),
+            GestureDetector(
+              child: Container(
+                height: 200,
+                width: 250,
+                child: Card(
+                  elevation: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () => products(),
+                        child: Container(
+                          height: 100,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage(
+                                collection().im[2],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text('Kids'),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+        GestureDetector(
+          child: Container(
+            height: 200,
+            width: 250,
+            child: Card(
+              elevation: 20,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () => products(),
+                    child: Container(
+                      height: 100,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage(
+                            collection().im[1],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text('  Womens'),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

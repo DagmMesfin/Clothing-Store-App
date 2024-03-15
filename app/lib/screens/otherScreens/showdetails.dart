@@ -1,6 +1,7 @@
+import '/database/auth.dart';
 import '/utils/likeanimation.dart';
+import '/utils/snackBar.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class showDetails extends StatefulWidget {
   final int indexs;
@@ -24,6 +25,7 @@ class showDetails extends StatefulWidget {
 }
 
 class _showDetailsState extends State<showDetails> {
+  bool isfinished = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,9 +67,21 @@ class _showDetailsState extends State<showDetails> {
                     ClipOval(
                       child: Material(
                         color: Colors.grey[300],
-                        child: likeAnimation(
-                          snap: FirebaseAuth.instance.currentUser!,
-                          product: widget.like,
+                        child: IconButton(
+                          onPressed: () async {
+                            await authMethod().likepost(
+                                widget.like['postId'], widget.like['like']);
+                          },
+                          icon: widget.like['like']
+                                  .contains(widget.like['postId'])
+                              ? Icon(
+                                  Icons.favorite,
+                                  color: Colors.redAccent,
+                                )
+                              : Icon(
+                                  Icons.favorite_border_outlined,
+                                  color: Colors.grey,
+                                ),
                         ),
                       ),
                     ),
@@ -232,12 +246,33 @@ class _showDetailsState extends State<showDetails> {
                 shape: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                onPressed: () {},
-                child: Center(
-                  child: Text(
-                    'Buy Now',
-                  ),
-                ),
+                onPressed: () async {
+                  setState(() {
+                    isfinished = false;
+                  });
+                  String result = await authMethod().toCart(
+                    imageurl: widget.images,
+                    price: widget.price,
+                    title: widget.title,
+                  );
+                  setState(() {
+                    isfinished = true;
+                  });
+                  if (result == 'success') {
+                    showSnack('Added to Cart! ', context);
+                  } else {
+                    showSnack('Error : some error occured. ', context);
+                  }
+                },
+                child: isfinished
+                    ? Center(
+                        child: Text(
+                          'Buy Now',
+                        ),
+                      )
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 10),

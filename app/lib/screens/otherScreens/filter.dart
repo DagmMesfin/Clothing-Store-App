@@ -249,7 +249,7 @@ class _filterState extends State<filter> {
                   IconButton(
                     onPressed: () {},
                     icon: Icon(
-                      Icons.arrow_forward,
+                      Icons.arrow_forward_ios,
                     ),
                   ),
                 ],

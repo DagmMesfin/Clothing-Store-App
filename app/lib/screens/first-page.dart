@@ -2,10 +2,7 @@ import '/screens/bottomBarScreens/Home.dart';
 import '/screens/bottomBarScreens/product.dart';
 import '/screens/bottomBarScreens/profile.dart';
 import '/screens/bottomBarScreens/search.dart';
-import '/database/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class first extends StatefulWidget {
@@ -17,8 +14,12 @@ class first extends StatefulWidget {
 
 class _firstState extends State<first> {
   int page = 0;
-
-  final pages = [HomeScreen(), SearchScreen(), OrdersPage(), ProfilePage()];
+  final pages = [
+    HomeScreen(),
+    searchScreen(),
+    productScreen(),
+    profileScreen(),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

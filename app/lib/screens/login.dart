@@ -1,17 +1,12 @@
-import 'package:shega_cloth_store_app/database/provider.dart';
-
 import '/adminSide/adminLogin.dart';
 import '/database/auth.dart';
 import '/prefs/loginPreference.dart';
 import '/screens/first-page.dart';
+import '/screens/resetpassword.dart';
 import '/screens/signup.dart';
 import '/utils/snackBar.dart';
 import '/utils/textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 
 class signin extends StatefulWidget {
@@ -24,12 +19,9 @@ class signin extends StatefulWidget {
 class _signinState extends State<signin> {
   TextEditingController userpasswordController = TextEditingController();
   TextEditingController userEmailController = TextEditingController();
-
+  bool isfinished = true;
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> userData;
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseFirestore _firestore = FirebaseFirestore.instance;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -47,7 +39,7 @@ class _signinState extends State<signin> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => AdminLogin(),
+                          builder: (context) => adminLogin(),
                         ),
                       );
                     },
@@ -92,14 +84,14 @@ class _signinState extends State<signin> {
               hint: 'Username or email',
               prefix: Icon(
                 Icons.person_2_outlined,
-              ), maxLines: 1,
+              ),
             ),
             textFields(
               controller: userpasswordController,
               hint: 'Password',
               prefix: Icon(
                 Icons.shopping_bag_rounded,
-              ), maxLines: 1,
+              ),
             ),
             Flexible(
               child: Container(),
@@ -118,22 +110,17 @@ class _signinState extends State<signin> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       onPressed: () async {
+                        setState(() {
+                          isfinished = false;
+                        });
                         String result = await authMethod().UserSignin(
                           email: userEmailController.text,
                           password: userpasswordController.text,
                         );
+                        setState(() {
+                          isfinished = true;
+                        });
                         if (result == 'success') {
-                          var snapshot = await _firestore
-                              .collection('users')
-                              .doc(
-                                FirebaseAuth.instance.currentUser!.uid,
-                              )
-                              .get();
-                          userData = snapshot.data()!;
-                          print(userData);
-                          Provider.of<UserProvider>(context, listen: false)
-                              .userSignInMap(userData);
-
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => first(),
@@ -150,25 +137,32 @@ class _signinState extends State<signin> {
                           );
                         }
                       },
-                      child: Container(
-                        width: 400,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              'Signin',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
+                      child: isfinished
+                          ? Container(
+                              width: 400,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    'Signin',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.login_outlined,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.green,
                               ),
                             ),
-                            Icon(
-                              Icons.login_outlined,
-                            ),
-                          ],
-                        ),
-                      ),
                     );
                   },
                 ),
@@ -176,6 +170,20 @@ class _signinState extends State<signin> {
             ),
             SizedBox(
               height: 10,
+            ),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => reset(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Forgot Password ?',
+                ),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

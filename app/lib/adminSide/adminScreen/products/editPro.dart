@@ -1,27 +1,29 @@
 import 'dart:typed_data';
 
+import '/database/auth.dart';
 import '/utils/pickImages.dart';
 import '/utils/textfield.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class EditProduct extends StatefulWidget {
-  const EditProduct({Key? key}) : super(key: key);
+class editProduct extends StatefulWidget {
+  final snap;
+  const editProduct({
+    super.key,
+    required this.snap,
+  });
 
   @override
-  State<EditProduct> createState() => _EditProductState();
+  State<editProduct> createState() => _editProductState();
 }
 
-class _EditProductState extends State<EditProduct> {
-  TextEditingController descriptionController = TextEditingController();
+class _editProductState extends State<editProduct> {
+  TextEditingController discriptionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   Uint8List? file;
-
-  String selectedGender = 'male';
-  String selectedColor = 'blue';
-  String selectedBrand = 'nike';
-
+  bool isfinished = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,47 +48,20 @@ class _EditProductState extends State<EditProduct> {
           ),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            ListTile(
-              title: Text('Gender'),
-              subtitle: Text(selectedGender),
-              onTap: () {
-                // Similar to addPro widget, implement a dialog or navigation to select gender
-              },
-            ),
-            ListTile(
-              title: Text('Color'),
-              subtitle: Text(selectedColor),
-              onTap: () {
-                // Similar to addPro widget, implement a dialog or navigation to select color
-              },
-            ),
-            ListTile(
-              title: Text('Brand'),
-              subtitle: Text(selectedBrand),
-              onTap: () {
-                // Similar to addPro widget, implement a dialog or navigation to select brand
-              },
-            ),
-          ],
-        ),
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           textFields(
             controller: titleController,
-            hint: 'Title', maxLines: 3,
+            hint: 'Title',
           ),
           textFields(
             controller: priceController,
-            hint: 'Price', maxLines: 1,
+            hint: 'Price',
           ),
           textFields(
-            controller: descriptionController,
-            hint: 'Description', maxLines: 1,
+            controller: discriptionController,
+            hint: 'Description',
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20),
@@ -98,23 +73,18 @@ class _EditProductState extends State<EditProduct> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: file != null
-                  ? Image.memory(
-                      file!,
+                  ? Image(
+                      image: MemoryImage(file!),
                       fit: BoxFit.fill,
                     )
                   : IconButton(
                       onPressed: () async {
-                        try {
-                          Uint8List im = await pickedImages(
-                            ImageSource.gallery,
-                          );
-                          setState(() {
-                            file = im;
-                          });
-                        } catch (e) {
-                          // Handle image selection error
-                          print('Error selecting image: $e');
-                        }
+                        Uint8List im = await pickedImages(
+                          ImageSource.gallery,
+                        );
+                        setState(() {
+                          file = im;
+                        });
                       },
                       icon: Icon(
                         Icons.upload,
@@ -130,22 +100,37 @@ class _EditProductState extends State<EditProduct> {
           Padding(
             padding: const EdgeInsets.only(left: 30, right: 30),
             child: MaterialButton(
-              color: Color.fromARGB(255, 112, 101, 185),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              onPressed: () {
-                // Implement the update logic here
-              },
-              height: 60,
-              minWidth: 300,
-              child: Center(
-                child: Text(
-                  'Update Product',
-                  style: TextStyle(color: Colors.white),
+                color: Color.fromARGB(255, 112, 101, 185),
+                shape: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-            ),
+                onPressed: () {
+                  setState(() {
+                    isfinished = false;
+                  });
+                  authMethod().updatingPosts(
+                    widget.snap['postId'],
+                    titleController.text,
+                    priceController.text,
+                    discriptionController.text,
+                    file!,
+                  );
+                  isfinished = true;
+                },
+                height: 60,
+                minWidth: 300,
+                child: isfinished
+                    ? Center(
+                        child: Text(
+                          'Update Product',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                      )
+                    : Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.green,
+                        ),
+                      )),
           ),
         ],
       ),

@@ -1,241 +1,228 @@
+import '/screens/otherScreens/checkout.dart';
+import '/utils/summeryProduct.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class OrdersPage extends StatefulWidget {
-  const OrdersPage({Key? key}) : super(key: key);
+class productScreen extends StatefulWidget {
+  const productScreen({
+    super.key,
+  });
 
   @override
-  State<OrdersPage> createState() => _OrdersPageState();
+  State<productScreen> createState() => _productScreenState();
 }
 
-class _OrdersPageState extends State<OrdersPage> {
-  bool isActiveUnderlined = true;
-  bool isCompletedUnderlined = false;
-  bool isCancelledUnderlined = false;
-
+class _productScreenState extends State<productScreen> {
+  int items = 0;
+  int subtotal = 0;
+  int total = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Container(
-          margin: EdgeInsets.only(top: 16, bottom: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              Text(
-                "Orders",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                width: 50,
-              ),
-            ],
+        automaticallyImplyLeading: false,
+        title: Center(
+          child: Text(
+            'Cart',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.more_vert,
+              size: 30,
+              color: Colors.black87,
+            ),
+          ),
+        ],
       ),
-      body: Container(
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isActiveUnderlined = true;
-                      isCompletedUnderlined = false;
-                      isCancelledUnderlined = false;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: isActiveUnderlined
-                              ? Colors.blue
-                              : Colors.transparent,
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      "Active",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isActiveUnderlined = false;
-                      isCompletedUnderlined = true;
-                      isCancelledUnderlined = false;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: isCompletedUnderlined
-                              ? Colors.blue
-                              : Colors.transparent,
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      "Completed",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isActiveUnderlined = false;
-                      isCompletedUnderlined = false;
-                      isCancelledUnderlined = true;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: isCancelledUnderlined
-                              ? Colors.blue
-                              : Colors.transparent,
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      "Cancelled",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: 20,
+              left: 20,
+              right: 10,
             ),
-            SizedBox(
-              height: 20,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
+            child: Container(
+              height: 360,
+              color: Colors.grey[300],
+              child: ListView(
                 children: [
-                  Card(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 16, right: 16, top: 15),
-                      width: 350,
-                      height: 150,
-                      child: Row(
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.red,
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('cart')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .collection('cart')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.green,
+                          ),
+                        );
+                      }
+                      return SizedBox(
+                        height: 350,
+                        child: ListView.builder(
+                          itemCount: (snapshot.data! as dynamic).docs.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: 150,
+                              width: MediaQuery.of(context).size.width,
+                              child: Card(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          height: 150,
+                                          width: 150,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                  snapshot.data!.docs[index]
+                                                      ['imageurl'],
+                                                ),
+                                                fit: BoxFit.fill),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20, horizontal: 20),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                snapshot.data!.docs[index]
+                                                    ['title'],
+                                                style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Text(
+                                                snapshot.data!.docs[index]
+                                                    ['price'],
+                                                style: TextStyle(
+                                                  color: Colors.black54,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.delete_outline,
+                                            size: 40,
+                                            color: Color.fromARGB(
+                                                255, 222, 118, 122),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 20),
+                                          child: Row(
+                                            children: [
+                                              ClipOval(
+                                                child: Material(
+                                                  color: Color.fromARGB(
+                                                      255, 121, 121, 186),
+                                                  child: IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(
+                                                      color: Colors.white,
+                                                      size: 30,
+                                                      Icons.minimize_outlined,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              ClipOval(
+                                                child: Material(
+                                                  color: Color.fromARGB(
+                                                      255, 121, 121, 186),
+                                                  child: IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 30,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                height: 120,
-                                width: 120,
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Watch",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Rolex",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "\$40",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.deepPurple,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 60,
-                              ),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Track Order",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.deepPurple),
-                                  padding: MaterialStateProperty.all(
-                                    EdgeInsets.all(10),
-                                  ),
-                                  fixedSize: MaterialStateProperty.all(
-                                    Size(100, 20),
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          Flexible(
+            child: Container(),
+            flex: 1,
+          ),
+          summery(),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: MaterialButton(
+              height: 60,
+              minWidth: 300,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => checkOut(),
+                  ),
+                );
+              },
+              color: Color.fromARGB(255, 135, 121, 170),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(
+                child: Text(
+                  'Check Out',
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

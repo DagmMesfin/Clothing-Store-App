@@ -61,7 +61,9 @@ class products extends StatelessWidget {
                                     onPressed: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) => EditProduct(),
+                                          builder: (context) => editProduct(
+                                            snap: snapshot.data!.docs[index],
+                                          ),
                                         ),
                                       );
                                     },
@@ -72,7 +74,10 @@ class products extends StatelessWidget {
                                   ),
                                   IconButton(
                                     onPressed: () {
-                                      showBottom(context);
+                                      showBottom(
+                                        context,
+                                        snapshot.data!.docs[index]['postId'],
+                                      );
                                     },
                                     icon: Icon(
                                       Icons.delete,

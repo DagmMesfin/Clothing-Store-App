@@ -1,201 +1,263 @@
-import '/screens/bottomBarScreens/Home.dart';
-import '/screens/otherScreens/pro.dart';
+import '/screens/otherScreens/filter.dart';
 import '/screens/otherScreens/showdetails.dart';
-import '/utils/collections.dart';
-import '/utils/textfield.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
+import '/utils/likeanimation.dart';
+import '/utils/shimmerwidget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+class searchScreen extends StatefulWidget {
+  const searchScreen({super.key});
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<searchScreen> createState() => _searchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
-  TextEditingController _searchController = TextEditingController();
-  final images = [
-    'assets/im1.jpg',
-    'assets/im2.jpg',
-    'assets/im3.jpg',
-    'assets/prof.jpg',
-    'assets/im1.jpg',
-    'assets/im2.jpg',
-    'assets/im3.jpg',
-    'assets/prof.jpg',
-  ];
-
+class _searchScreenState extends State<searchScreen> {
+  TextEditingController searchController = TextEditingController();
+  bool isShowData = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.black, // Set the border color to black
-                    width: 2.0, // Set the border width
-                  ),
-                  color: Colors.transparent,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          // Your action when the leading icon is pressed
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ListView(
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          setState(() {
+                            isShowData = true;
+                          });
                         },
-                        icon: Icon(Icons.search),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search...',
-                            border: InputBorder.none,
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                _searchController.clear();
-                              },
-                              icon: Icon(Icons.clear),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            child: Icon(
+                              Icons.search,
+                              color: Colors.grey[400],
                             ),
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              searchController.clear();
+                            },
+                            icon: const Icon(
+                              Icons.clear,
+                            ),
+                          ),
+                          hintText: 'search here',
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Results for\" ${searchController.text}\"',
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => filter(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Filter',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 99, 96, 169),
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Results for "after backend${_searchController.text}"',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'after backend Results Found',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              SizedBox(height: 10),
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 15,
-                    crossAxisSpacing: 20,
-                    children: List.generate(8, (index) {
-                      return Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  height: 150,
-                                  width: 200,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18),
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                        'images[index]',
-                                      ),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
+                searchController.text != ''
+                    ? FutureBuilder(
+                        future: FirebaseFirestore.instance
+                            .collection('products')
+                            .where(
+                              'title',
+                              isGreaterThanOrEqualTo: searchController.text,
+                            )
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return SizedBox(
+                              height: MediaQuery.of(context).size.height,
+                              child: GridView.count(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                                children: List.generate(
+                                  7,
+                                  (index) => const shimmer(),
                                 ),
-                                Positioned(
-                                  left: 170,
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.favorite_border_outlined,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'watch',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      Text(
-                                        '\$12',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  ClipOval(
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Material(
-                                      color: Color.fromARGB(214, 117, 73, 220),
-                                      child: IconButton(
-                                        onPressed: () {},
-                                        icon: Center(
-                                          child: Icon(
-                                            Icons.add,
+                              ),
+                            );
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 10, top: 10),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height,
+                              child: GridView.count(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                                children: List.generate(
+                                    snapshot.data!.docs.length, (index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => showDetails(
+                                            indexs: index,
+                                            title: snapshot.data!.docs[index]
+                                                ['title'],
+                                            price: snapshot.data!.docs[index]
+                                                ['price'],
+                                            images: snapshot.data!.docs[index]
+                                                ['photourl'],
+                                            discription: snapshot.data!
+                                                .docs[index]['description'],
+                                            like: snapshot.data!.docs[index],
                                           ),
                                         ),
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              Container(
+                                                height: 150,
+                                                width: 200,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                      snapshot.data!.docs[index]
+                                                          ['photourl'],
+                                                    ),
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                left: 150,
+                                                child: likeAnimation(
+                                                  snap: snapshot
+                                                      .data!.docs[index],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      snapshot.data!.docs[index]
+                                                          ['title'],
+                                                      style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black87,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '\$ ${snapshot.data!.docs[index]['price']} ',
+                                                      style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black87,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                ClipOval(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Material(
+                                                    color: const Color.fromARGB(
+                                                        214, 117, 73, 220),
+                                                    child: IconButton(
+                                                      onPressed: () {},
+                                                      icon: const Center(
+                                                        child: Icon(
+                                                          Icons.add,
+                                                          //color: Colors.purple,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  );
+                                }),
                               ),
                             ),
-                          ],
+                          );
+                        },
+                      )
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 5,
+                          children: List.generate(
+                            7,
+                            (index) => const shimmer(),
+                          ),
                         ),
-                      );
-                    }),
-                  ),
-                ),
-              ),
-            ],
-          ),
+                      ),
+              ],
+            ),
+          ],
         ),
       ),
     );

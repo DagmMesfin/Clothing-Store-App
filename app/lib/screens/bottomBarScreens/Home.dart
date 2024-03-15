@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import '../../database/user.dart';
 import '/screens/otherScreens/pro.dart';
 import '/screens/otherScreens/showdetails.dart';
 import '/utils/likeanimation.dart';
@@ -10,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 int active_index = 0;
@@ -33,35 +35,39 @@ class _HomeScreenState extends State<HomeScreen>
   TextEditingController userSearchController = TextEditingController();
   Uint8List? file;
   String username = '';
-  late AnimationController _controller;
-  late Animation _coloranimation;
+  String posturl = '';
+  // late AnimationController _controller;
+  // late Animation _coloranimation;
   @override
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(
-        milliseconds: 200,
-      ),
-    );
-    _coloranimation = ColorTween(begin: Colors.grey[400], end: Colors.red)
-        .animate(_controller);
-    _controller.forward();
-    _controller.addListener(() {
-      setState(() {});
-    });
+    // _controller = AnimationController(
+    //   vsync: this,
+    //   duration: Duration(
+    //     milliseconds: 200,
+    //   ),
+    // );
+    // _coloranimation = ColorTween(begin: Colors.grey[400], end: Colors.red)
+    //     .animate(_controller);
+    // _controller.forward();
+    // _controller.addListener(() {
+    //   setState(() {});
+    // });
+    getdata();
   }
 
-  addData() async {
+  Future<void> getdata() async {
     DocumentSnapshot snap = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
+    print(snap);
+
     setState(() {
-      username = (snap.data() as Map<String, dynamic>)['username'];
+      username = snap['userName'];
+      posturl = snap['photourl'];
     });
-    print(username);
   }
 
   @override
@@ -87,8 +93,8 @@ class _HomeScreenState extends State<HomeScreen>
                         )
                       : CircleAvatar(
                           radius: 40,
-                          backgroundImage: AssetImage(
-                            "assets/im2.jpg",
+                          backgroundImage: NetworkImage(
+                            posturl,
                           ),
                         ),
                 ),
@@ -99,12 +105,12 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),
                 subtitle: Text(
-                  'admin',
-                  // style: TextStyle(
-                  //   fontWeight: FontWeight.bold,
-                  //   fontSize: 18,
-                  //   color: Colors.black87,
-                  // ),
+                  username,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: Colors.black87,
+                  ),
                 ),
                 trailing: Padding(
                   padding: const EdgeInsets.only(
@@ -123,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen>
                 hint: 'search here',
                 prefix: Icon(
                   Icons.search,
-                ), maxLines: 1,
+                ),
               ),
               CarouselSlider.builder(
                 itemCount: images.length,
@@ -362,8 +368,7 @@ class _buildAdvertiseState extends State<buildAdvertise> {
                       Positioned(
                         left: 120,
                         child: likeAnimation(
-                          snap: FirebaseAuth.instance.currentUser!,
-                          product: widget.like,
+                          snap: widget.like,
                         ),
                       ),
                     ],

@@ -1,6 +1,7 @@
+import '/database/auth.dart';
 import 'package:flutter/material.dart';
 
-showBottom(context) {
+showBottom(context, String postId) {
   showBottomSheet(
     backgroundColor: Colors.grey[300],
     context: context,
@@ -54,7 +55,10 @@ showBottom(context) {
                   width: 10,
                 ),
                 MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    authMethod().deletingPosts(postId);
+                    Navigator.of(context).pop();
+                  },
                   height: 50,
                   minWidth: 50,
                   color: Colors.red,
