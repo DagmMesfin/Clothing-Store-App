@@ -1,3 +1,6 @@
+import 'package:shega_cloth_store_app/screens/bottomBarScreens/search.dart';
+import 'package:shega_cloth_store_app/screens/otherScreens/filter.dart';
+
 import '/firebase_options.dart';
 import '/prefs/loginPreference.dart';
 import '/screens/first-page.dart';
@@ -33,6 +36,10 @@ class MyApp extends StatelessWidget {
       child: Consumer<defaultt>(
         builder: (context, value, child) {
           return MaterialApp(
+            routes: {
+              '/search': (context) => searchScreen(),
+              '/filter': (context) => filter(),
+            },
             debugShowCheckedModeBanner: false,
             home: (value.islogin && value.isUser) ? first() : welcome(),
           );

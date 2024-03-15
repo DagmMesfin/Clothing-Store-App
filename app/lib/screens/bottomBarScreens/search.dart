@@ -16,8 +16,37 @@ class searchScreen extends StatefulWidget {
 class _searchScreenState extends State<searchScreen> {
   TextEditingController searchController = TextEditingController();
   bool isShowData = false;
+
+  Future<QuerySnapshot<Object?>> performSearchAndFilter(String searchQuery,
+      [String gender = '', String color = '']) {
+    CollectionReference usersRef =
+        FirebaseFirestore.instance.collection('products');
+    Query filteredQuery = usersRef;
+
+    if (gender.isNotEmpty) {
+      filteredQuery = filteredQuery.where('gender', isEqualTo: gender);
+    }
+
+    if (color.isNotEmpty) {
+      filteredQuery = filteredQuery.where('color', isEqualTo: color);
+    }
+
+    if (searchQuery.isNotEmpty) {
+      filteredQuery =
+          filteredQuery.where('title', isGreaterThanOrEqualTo: searchQuery);
+    }
+
+    return filteredQuery.get();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> arguments = {};
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      arguments =
+          ModalRoute.of(context)!.settings.arguments! as Map<String, dynamic>;
+    }
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -73,11 +102,8 @@ class _searchScreenState extends State<searchScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => filter(),
-                            ),
-                          );
+                          Navigator.pushNamed(context, '/filter',
+                              arguments: searchController.text);
                         },
                         child: Text(
                           'Filter',
@@ -95,13 +121,13 @@ class _searchScreenState extends State<searchScreen> {
                 ),
                 searchController.text != ''
                     ? FutureBuilder(
-                        future: FirebaseFirestore.instance
-                            .collection('products')
-                            .where(
-                              'title',
-                              isGreaterThanOrEqualTo: searchController.text,
-                            )
-                            .get(),
+                        future: arguments["gender"] != null &&
+                                arguments["color"] != null
+                            ? performSearchAndFilter(
+                                searchController.text,
+                                arguments["color"] as String,
+                                arguments['gender'] as String)
+                            : performSearchAndFilter(searchController.text),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return SizedBox(
