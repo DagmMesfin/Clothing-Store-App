@@ -34,12 +34,11 @@ class _searchScreenState extends State<SearchScreen> {
       filteredQuery = filteredQuery.where('color', isEqualTo: color);
     }
 
-    if (searchQuery.isNotEmpty) {
-      filteredQuery =
-          filteredQuery.where('title', isGreaterThanOrEqualTo: searchQuery);
-    }
+    filteredQuery = filteredQuery
+        .where('title', isGreaterThanOrEqualTo: searchQuery)
+        .where('title', isLessThan: searchQuery + 'z');
 
-    return filteredQuery.get();
+    return filteredQuery.orderBy('title').get();
   }
 
   @override
@@ -126,7 +125,7 @@ class _searchScreenState extends State<SearchScreen> {
                 ),
                 searchController.text != ''
                     ? FutureBuilder(
-                        future: arguments["gender"] != null &&
+                        future: arguments["gender"] != null ||
                                 arguments["color"] != null
                             ? performSearchAndFilter(
                                 searchController.text,
@@ -154,7 +153,7 @@ class _searchScreenState extends State<SearchScreen> {
                               height: MediaQuery.of(context).size.height,
                               child: GridView.count(
                                 crossAxisCount: 2,
-                                mainAxisSpacing: 5,
+                                mainAxisSpacing: 40,
                                 crossAxisSpacing: 5,
                                 children: List.generate(
                                     snapshot.data!.docs.length, (index) {
@@ -178,8 +177,9 @@ class _searchScreenState extends State<SearchScreen> {
                                       );
                                     },
                                     child: Container(
-                                      height: 100,
-                                      width: 100,
+                                      margin: EdgeInsets.all(7),
+                                      height: 80,
+                                      width: 90,
                                       decoration: BoxDecoration(
                                         color: Colors.grey[200],
                                         borderRadius: BorderRadius.circular(10),
@@ -191,7 +191,7 @@ class _searchScreenState extends State<SearchScreen> {
                                           Stack(
                                             children: [
                                               Container(
-                                                height: 150,
+                                                height: 110,
                                                 width: 200,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
@@ -206,10 +206,12 @@ class _searchScreenState extends State<SearchScreen> {
                                                 ),
                                               ),
                                               Positioned(
-                                                left: 150,
+                                                right: 5,
                                                 child: likeAnimation(
-                                                  snap: snapshot.data!
-                                                      .docs[index]['like'],
+                                                  product: snapshot
+                                                      .data!.docs[index],
+                                                  snap: FirebaseAuth
+                                                      .instance.currentUser!,
                                                 ),
                                               ),
                                             ],

@@ -4,11 +4,9 @@ import 'package:flutter/widgets.dart';
 
 class likeAnimation extends StatefulWidget {
   final snap;
+  final product;
 
-  const likeAnimation({
-    super.key,
-    required this.snap,
-  });
+  const likeAnimation({super.key, required this.snap, required this.product});
 
   @override
   State<likeAnimation> createState() => _likeAnimationState();
@@ -19,9 +17,10 @@ class _likeAnimationState extends State<likeAnimation> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () async {
-        await authMethod().likepost(widget.snap['userID'], widget.snap['like']);
+        await authMethod()
+            .likepost(widget.product["userID"], widget.product['like']);
       },
-      icon: widget.snap['like'].contains(widget.snap['userID'])
+      icon: widget.product['like'].contains(widget.snap.uid)
           ? Icon(
               Icons.favorite,
               color: Colors.redAccent,

@@ -86,6 +86,7 @@ class _filterState extends State<filter> {
                       onPressed: () {
                         setState(() {
                           gender = 'male';
+                          print(gender);
                         });
                       },
                       child: Center(
@@ -104,6 +105,7 @@ class _filterState extends State<filter> {
                       onPressed: () {
                         setState(() {
                           gender = 'female';
+                          print(gender);
                         });
                       },
                       child: Center(

@@ -1,5 +1,6 @@
 import 'package:shega_cloth_store_app/adminSide/adminScreen/adminHome.dart';
 import 'package:shega_cloth_store_app/database/provider.dart';
+import 'package:shega_cloth_store_app/screens/login.dart';
 
 import '/adminSide/adminLogin.dart';
 import '/database/auth.dart';
@@ -28,14 +29,42 @@ class _AdminLoginState extends State<AdminLogin> {
   bool isloggedin = true;
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     Map<String, dynamic> userData;
     FirebaseAuth _auth = FirebaseAuth.instance;
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          shrinkWrap: false,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                right: 20,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => signin(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'User Login',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(
                 top: 100,
@@ -77,9 +106,8 @@ class _AdminLoginState extends State<AdminLogin> {
               ),
               maxLines: 1,
             ),
-            Flexible(
-              child: Container(),
-              flex: 1,
+            SizedBox(
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -88,7 +116,7 @@ class _AdminLoginState extends State<AdminLogin> {
                   builder: (context, value, child) {
                     return MaterialButton(
                         height: 60,
-                        minWidth: 400,
+                        minWidth: width * 0.8,
                         color: Color.fromARGB(255, 128, 140, 220),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -133,7 +161,7 @@ class _AdminLoginState extends State<AdminLogin> {
                         },
                         child: isloggedin
                             ? Container(
-                                width: 400,
+                                width: width * 0.6,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,

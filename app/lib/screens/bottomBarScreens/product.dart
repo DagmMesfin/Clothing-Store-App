@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +133,7 @@ class _productScreenState extends State<productScreen> {
                                           onPressed: () async {
                                             await authMethod().deletingcarts(
                                               snapshot.data!.docs[index]
-                                                  ['userID'],
+                                                  ['userId'],
                                             );
                                             showSnack('Deleted!', context);
                                           },

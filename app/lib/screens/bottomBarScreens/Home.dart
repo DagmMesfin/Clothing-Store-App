@@ -128,6 +128,17 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   Spacer(),
                   IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/order');
+                    },
+                    icon: Icon(
+                      Icons.shopping_bag,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  IconButton(
                     onPressed: () {},
                     icon: Icon(
                       Icons.notifications,
@@ -400,7 +411,8 @@ class _buildAdvertiseState extends State<buildAdvertise> {
                       Positioned(
                         left: 120,
                         child: likeAnimation(
-                          snap: widget.like,
+                          product: widget.like,
+                          snap: FirebaseAuth.instance.currentUser!,
                         ),
                       ),
                     ],

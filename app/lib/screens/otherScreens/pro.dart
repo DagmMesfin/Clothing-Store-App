@@ -107,10 +107,86 @@ class _ProState extends State<Pro> {
                                   ),
                                 ),
                               ),
+<<<<<<< HEAD
                               Positioned(
                                 left: 150,
                                 child: likeAnimation(
                                   snap: snapshot.data!.docs[index],
+=======
+                            ),
+                            Positioned(
+                              left: 150,
+                              child: likeAnimation(
+                                product: snapshot.data!.docs[index],
+                                snap: FirebaseAuth.instance.currentUser!,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    snapshot.data!.docs[index]['title'],
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  Text(
+                                    '\$ ${snapshot.data!.docs[index]['price']} ',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ClipOval(
+                                clipBehavior: Clip.antiAlias,
+                                child: Material(
+                                  color: Color.fromARGB(214, 117, 73, 220),
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        isfinished = false;
+                                      });
+                                      String res = await authMethod().toCart(
+                                        imageurl: snapshot.data!.docs[index]
+                                            ['photourl'],
+                                        title: snapshot.data!.docs[index]
+                                            ['title'],
+                                        price: snapshot.data!.docs[index]
+                                            ['price'],
+                                      );
+                                      setState(() {
+                                        isfinished = true;
+                                      });
+                                      if (res == 'success') {
+                                        showSnack('Added to cart', context);
+                                      } else {
+                                        showSnack(
+                                            'some error occured.cheak your connection',
+                                            context);
+                                      }
+                                      setState(() {
+                                        isfinished = true;
+                                      });
+                                    },
+                                    icon: Center(
+                                      child: Icon(
+                                        Icons.add,
+                                        //color: Colors.purple,
+                                      ),
+                                    ),
+                                  ),
+>>>>>>> c90b109881ffad5ac82e8ebb8707d791280e5fb4
                                 ),
                               ),
                             ],

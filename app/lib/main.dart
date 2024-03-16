@@ -1,7 +1,9 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:shega_cloth_store_app/database/provider.dart';
+import 'package:shega_cloth_store_app/screens/bottomBarScreens/product.dart';
 import 'package:shega_cloth_store_app/screens/bottomBarScreens/search.dart';
 import 'package:shega_cloth_store_app/screens/otherScreens/filter.dart';
+import 'package:shega_cloth_store_app/screens/otherScreens/orderPage.dart';
 
 import '/firebase_options.dart';
 import '/prefs/loginPreference.dart';
@@ -39,6 +41,9 @@ class MyApp extends StatelessWidget {
             routes: {
               '/search': (context) => SearchScreen(),
               '/filter': (context) => filter(),
+              '/order': (context) => OrdersPage(),
+              '/cart': (context) => productScreen(),
+              '/notification': (context) => productScreen(),
             },
             debugShowCheckedModeBanner: false,
             home: (value.islogin && value.isUser) ? first() : welcome(),

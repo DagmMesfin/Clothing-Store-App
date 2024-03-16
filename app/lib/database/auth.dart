@@ -118,13 +118,14 @@ class authMethod {
 
   Future<void> likepost(String userID, List like) async {
     try {
-      if (like.contains(userID)) {
+      final user = FirebaseAuth.instance.currentUser!.uid;
+      if (like.contains(user)) {
         await _firestore.collection('products').doc(userID).update({
-          'like': FieldValue.arrayRemove([userID])
+          'like': FieldValue.arrayRemove([user])
         });
       } else {
         await _firestore.collection('products').doc(userID).update({
-          'like': FieldValue.arrayUnion([userID])
+          'like': FieldValue.arrayUnion([user])
         });
       }
     } catch (e) {
@@ -198,6 +199,7 @@ class authMethod {
         'imageurl': imageurl,
         'title': title,
         'price': price,
+        'userId': postId,
       });
       res = 'success';
     } catch (e) {

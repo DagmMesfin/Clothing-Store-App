@@ -85,7 +85,8 @@ class _showDetailsState extends State<showDetails> {
                               child: Material(
                                 color: Colors.grey[300],
                                 child: likeAnimation(
-                                  snap: widget.like,
+                                  product: widget.like,
+                                  snap: FirebaseAuth.instance.currentUser!,
                                 ),
                               ),
                             ),
