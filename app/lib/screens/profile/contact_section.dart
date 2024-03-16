@@ -14,13 +14,12 @@ class ContactSection extends StatelessWidget {
       Row(
         children: [
           IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back),
-            color: Colors.black,
-            iconSize: 30,
-          ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back),
+              color: Colors.black,
+              iconSize: 40),
           SizedBox(width: 100),
           Text(
             'Contact Us',
