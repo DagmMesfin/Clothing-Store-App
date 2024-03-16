@@ -1,5 +1,6 @@
 import 'package:shega_cloth_store_app/database/googleauth.dart';
 import 'package:shega_cloth_store_app/database/provider.dart';
+import 'package:shega_cloth_store_app/screens/otherScreens/resetpassword.dart';
 import 'package:shega_cloth_store_app/utils/smallContainer.dart';
 
 import '/adminSide/adminLogin.dart';
@@ -187,6 +188,15 @@ class _signinState extends State<signin> {
                   },
                 ),
               ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+
+            Center(
+              child: TextButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder:(context)=>reset(),),);
+              }, child: Text('Forgot Password ?',style: TextStyle(fontSize: 15,color: Colors.blue[500],),),),
             ),
             SizedBox(
               height: 10,

@@ -5,6 +5,11 @@ import '/utils/likeanimation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+int items = 0;
+int subtotal = 0;
+int total = 0;
+int discount = 0;
+
 class showDetails extends StatefulWidget {
   final int indexs;
   final price;
@@ -272,6 +277,17 @@ class _showDetailsState extends State<showDetails> {
                       setState(() {
                         isfinish = true;
                       });
+
+                      //calculating the summary
+
+                      items = items + 1;
+                      if (items <= 3) {
+                        discount = 1;
+                      } else {
+                        discount = 3;
+                      }
+                      subtotal = widget.price + subtotal;
+                      total = total + subtotal - discount;
                     },
                     child: isfinish
                         ? Center(

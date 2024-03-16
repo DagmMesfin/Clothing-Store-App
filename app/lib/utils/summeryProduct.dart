@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shega_cloth_store_app/screens/otherScreens/showdetails.dart';
 
 class summery extends StatelessWidget {
   const summery({super.key});
@@ -24,7 +25,7 @@ class summery extends StatelessWidget {
                 'Items',
               ),
               Text(
-                '3',
+                '$items',
               ),
             ],
           ),
@@ -35,7 +36,7 @@ class summery extends StatelessWidget {
                 'Subtotal',
               ),
               Text(
-                '\$567',
+                '$subtotal',
               ),
             ],
           ),
@@ -46,7 +47,7 @@ class summery extends StatelessWidget {
                 'Discount',
               ),
               Text(
-                '\$5',
+                '$discount',
               ),
             ],
           ),
@@ -76,7 +77,7 @@ class summery extends StatelessWidget {
                 ' Total',
               ),
               Text(
-                '\$423',
+                '$total',
               ),
             ],
           ),

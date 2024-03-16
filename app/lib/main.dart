@@ -8,8 +8,8 @@ import '/prefs/loginPreference.dart';
 import '/screens/first-page.dart';
 import '/screens/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

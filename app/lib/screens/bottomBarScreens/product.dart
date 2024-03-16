@@ -16,9 +16,6 @@ class productScreen extends StatefulWidget {
 }
 
 class _productScreenState extends State<productScreen> {
-  int items = 0;
-  int subtotal = 0;
-  int total = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

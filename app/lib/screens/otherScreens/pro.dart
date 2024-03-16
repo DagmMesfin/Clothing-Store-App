@@ -1,4 +1,5 @@
 import 'package:shega_cloth_store_app/database/auth.dart';
+import 'package:shega_cloth_store_app/screens/otherScreens/showdetails.dart';
 import 'package:shega_cloth_store_app/utils/snackBar.dart';
 
 import '/utils/likeanimation.dart';
@@ -67,108 +68,123 @@ class _ProState extends State<Pro> {
                 mainAxisSpacing: 5,
                 crossAxisSpacing: 5,
                 children: List.generate(snapshot.data!.docs.length, (index) {
-                  return Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                              height: 150,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    snapshot.data!.docs[index]['photourl'],
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => showDetails(
+                          indexs: index,
+                          title: snapshot.data!.docs[index]['title'],
+                          price: snapshot.data!.docs[index]['price'],
+                          images: snapshot.data!.docs[index]['photourl'],
+                          discription: snapshot.data!.docs[index]
+                              ['description'],
+                          like: snapshot.data!.docs[index],
+                        ),
+                      ));
+                    },
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                height: 150,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                      snapshot.data!.docs[index]['photourl'],
+                                    ),
+                                    fit: BoxFit.fill,
                                   ),
-                                  fit: BoxFit.fill,
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              left: 150,
-                              child: likeAnimation(
-                                snap: snapshot.data!.docs[index],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    snapshot.data!.docs[index]['title'],
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  Text(
-                                    '\$ ${snapshot.data!.docs[index]['price']} ',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              ClipOval(
-                                clipBehavior: Clip.antiAlias,
-                                child: Material(
-                                  color: Color.fromARGB(214, 117, 73, 220),
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      setState(() {
-                                        isfinished = false;
-                                      });
-                                      String res = await authMethod().toCart(
-                                        imageurl: snapshot.data!.docs[index]
-                                            ['photourl'],
-                                        title: snapshot.data!.docs[index]
-                                            ['title'],
-                                        price: snapshot.data!.docs[index]
-                                            ['price'],
-                                      );
-                                      setState(() {
-                                        isfinished = true;
-                                      });
-                                      if (res == 'success') {
-                                        showSnack('Added to cart', context);
-                                      } else {
-                                        showSnack(
-                                            'some error occured.cheak your connection',
-                                            context);
-                                      }
-                                      setState(() {
-                                        isfinished = true;
-                                      });
-                                    },
-                                    icon: Center(
-                                      child: Icon(
-                                        Icons.add,
-                                        //color: Colors.purple,
-                                      ),
-                                    ),
-                                  ),
+                              Positioned(
+                                left: 150,
+                                child: likeAnimation(
+                                  snap: snapshot.data!.docs[index],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      snapshot.data!.docs[index]['title'],
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    Text(
+                                      '\$ ${snapshot.data!.docs[index]['price']} ',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                ClipOval(
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Material(
+                                    color: Color.fromARGB(214, 117, 73, 220),
+                                    child: IconButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          isfinished = false;
+                                        });
+                                        String res = await authMethod().toCart(
+                                          imageurl: snapshot.data!.docs[index]
+                                              ['photourl'],
+                                          title: snapshot.data!.docs[index]
+                                              ['title'],
+                                          price: snapshot.data!.docs[index]
+                                              ['price'],
+                                        );
+                                        setState(() {
+                                          isfinished = true;
+                                        });
+                                        if (res == 'success') {
+                                          showSnack('Added to cart', context);
+                                        } else {
+                                          showSnack(
+                                              'some error occured.cheak your connection',
+                                              context);
+                                        }
+                                        setState(() {
+                                          isfinished = true;
+                                        });
+                                      },
+                                      icon: Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          //color: Colors.purple,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }),
